@@ -1,5 +1,6 @@
 # FROM nvidia/cuda:11.6.1-cudnn8-devel-ubuntu20.04
-FROM nvcr.io/nvidia/tensorrt:22.08-py3
+# FROM nvcr.io/nvidia/tensorrt:22.08-py3
+FROM nvcr.io/nvidia/tensorrt:22.12-py3
 ARG CERES_VERSION=2.1.0
 ARG CMAKE_VERSION=3.23.1
 ARG ONNX_VERSION=1.12.1
@@ -21,6 +22,9 @@ RUN  apt-get -y update && \
       libyaml-cpp-dev \
       libdw-dev \
       vim 
+
+ARG https_proxy="https://172.17.0.1:7890"
+ARG http_proxy="http://172.17.0.1:7890"
 
 #Install ROS
 # update ros repository
@@ -54,6 +58,9 @@ RUN sh -c 'echo "deb http://mirrors.ustc.edu.cn/ros/ubuntu/ `lsb_release -cs` ma
       gdb && \
       rosdep init && \
       rosdep update
+
+ARG https_proxy=""
+ARG http_proxy=""
 
 #Replace CMAKE
 RUN   rm /usr/bin/cmake && \
@@ -156,7 +163,7 @@ RUN   wget -qO - https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo a
       apt install vulkan-sdk -y
 
 #Install taichi
-RUN    pip install taichi transformations numpy lcm matplotlib scipy && apt install ros-${ROS_VERSION}-ros-numpy
+RUN    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple taichi transformations numpy lcm matplotlib scipy && apt install ros-${ROS_VERSION}-ros-numpy
 
 #Build D2SLAM
 RUN   mkdir -p ${SWARM_WS}/src/ && \
