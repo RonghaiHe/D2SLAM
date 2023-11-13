@@ -13,7 +13,9 @@ ARG LIBTORCH_VERSION=1.13.0
 #Some basic dependencies
 RUN  apt-get -y update && \
       DEBIAN_FRONTEND=noninteractive TZ=Asia/Beijing apt-get -y install tzdata && \
-      apt-get install -y wget curl lsb-release git \
+      apt-get install -y \
+      #ca-certificates \
+      wget curl lsb-release git \
       libatlas-base-dev \
       libeigen3-dev \
       libgoogle-glog-dev \
@@ -22,9 +24,6 @@ RUN  apt-get -y update && \
       libyaml-cpp-dev \
       libdw-dev \
       vim 
-
-ARG https_proxy="https://172.17.0.1:7890"
-ARG http_proxy="http://172.17.0.1:7890"
 
 #Install ROS
 # update ros repository
@@ -52,7 +51,12 @@ RUN sh -c 'echo "deb http://mirrors.ustc.edu.cn/ros/ubuntu/ `lsb_release -cs` ma
       python3-rosdep \
       ros-${ROS_VERSION}-catkin \
       net-tools \
-      python3-catkin-tools \
+      python3-catkin-tools 
+      
+ARG https_proxy="https://172.17.0.1:7890"
+ARG http_proxy="http://172.17.0.1:7890"
+
+RUN   DEBIAN_FRONTEND=noninteractive  apt-get install -y \
       htop \
       xterm \
       gdb && \
